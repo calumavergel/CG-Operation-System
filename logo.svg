@@ -1,0 +1,12 @@
+<svg viewBox="0 0 360 96" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ff7a00"/><stop offset="1" stop-color="#ffd54a"/></linearGradient>
+<filter id="b"><feGaussianBlur stdDeviation="3"/></filter>
+</defs>
+<polygon points="48,6 86,27 86,69 48,90 10,69 10,27" fill="none" stroke="#ff7a00" stroke-width="6" filter="url(#b)" opacity=".7"/>
+<polygon points="48,6 86,27 86,69 48,90 10,69 10,27" fill="#120800" stroke="url(#g)" stroke-width="3"/>
+<g font-family="Consolas,Menlo,monospace" fill="#ff9a2e" opacity=".55" font-size="9"><text x="22" y="26">1 0 1</text><text x="36" y="80">0 1 1</text></g>
+<text x="48" y="58" text-anchor="middle" font-family="Trebuchet MS,Verdana,sans-serif" font-weight="800" font-size="30" fill="url(#g)">CG</text>
+<text x="104" y="48" font-family="Trebuchet MS,Verdana,sans-serif" font-weight="800" font-size="30" fill="url(#g)">Operation</text>
+<text x="104" y="76" font-family="Consolas,Menlo,monospace" font-size="20" letter-spacing="9" fill="#ffb347">System 0110</text>
+</svg>
