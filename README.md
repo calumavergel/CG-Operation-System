@@ -1,1 +1,1 @@
-(https://calumavergel.github.io/CG-Operation-System/cg_operation_system_v2/calculator.html)
+[Open the Calculator](https://calumavergel.github.io/CG-Operation-System/cg_operation_system_v2/calculator.html)
