@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CG Operation System</title>
+<link rel="icon" href="{{ url_for('static', filename='logo.svg') }}">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070402;--panel:#140a03cc;--line:#ff8a1f55;--o:#ff8a1f;--y:#ffd54a;--t:#ffe9cf;--dim:#c08a55;--err:#ff5a4a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 20% 110%,#ff8a1f55,transparent 55%),var(--bg);color:var(--t);font-family:'Chakra Petch',sans-serif}
+#rain{position:fixed;inset:0;z-index:0;opacity:.55}
+main{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:28px 18px 60px}
+.logo{display:block;width:min(360px,90%);margin:0 auto 10px;filter:drop-shadow(0 0 18px #ff7a0088)}
+p.sub{text-align:center;color:var(--dim);margin:0 0 22px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:12px;border:1px solid var(--line);background:#00000066;color:var(--dim);font:700 16px 'Chakra Petch';cursor:pointer;border-radius:10px}
+.tabs button[aria-selected=true]{color:#1a0c00;background:linear-gradient(135deg,var(--o),var(--y));border-color:transparent;box-shadow:0 0 22px #ff8a1f88}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;backdrop-filter:blur(8px)}
+.card[hidden]{display:none}
+label{display:block;margin:0 0 6px;color:var(--dim);font-size:14px}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0a0502;color:var(--y);font:400 18px 'JetBrains Mono',monospace}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+.row{display:grid;gap:12px;margin-bottom:14px}
+.two{grid-template-columns:1fr 1fr}
+.ops{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.ops button{padding:12px 0;font:700 22px 'JetBrains Mono';background:#0a0502;color:var(--o);border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.ops button[aria-pressed=true]{background:var(--o);color:#1a0c00}
+.go{width:100%;padding:14px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--o),var(--y));color:#1a0c00;font:700 18px 'Chakra Petch';cursor:pointer}
+.out{margin-top:18px;padding:16px;border-radius:10px;background:#00000088;border:1px dashed var(--line);font-family:'JetBrains Mono',monospace;word-break:break-all;min-height:64px}
+.out b{display:block;font-size:26px;color:var(--y);text-shadow:0 0 14px #ff8a1f}
+.out small{display:block;color:var(--dim);margin-top:6px}
+.out.err{color:var(--err)}
+.sol{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);font-size:15px;line-height:1.6}
+.sol h3{margin:0 0 8px;color:var(--o);font:700 18px 'Chakra Petch'}
+.sol h4{margin:12px 0 4px;color:var(--y);font:700 15px 'Chakra Petch'}
+.sol div{color:var(--t)}
+@media(max-width:480px){.two{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){ #rain{display:none}}
+</style></head><body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<main>
+<img class="logo" src="{{ url_for('static', filename='logo.svg') }}" alt="CG Operation System logo">
+<p class="sub">Calculate and convert numbers in any base from 2 to 36.</p>
+
+<div class="tabs" role="tablist">
+<button role="tab" id="t1" aria-selected="true">Base operations</button>
+<button role="tab" id="t2" aria-selected="false">Base conversion</button>
+</div>
+
+<section class="card" id="p1">
+<div class="row two">
+<div><label for="a">First number</label><input id="a" value="1011" autocomplete="off"></div>
+<div><label for="ba">Base of first number</label><input id="ba" type="number" min="2" max="36" value="2"></div></div>
+<div class="row two">
+<div><label for="b">Second number</label><input id="b" value="1F" autocomplete="off"></div>
+<div><label for="bb">Base of second number</label><input id="bb" type="number" min="2" max="36" value="16"></div></div>
+<div class="ops" id="ops">
+<button data-op="+" aria-pressed="true" title="Add">+</button><button data-op="-" aria-pressed="false" title="Subtract">−</button>
+<button data-op="*" aria-pressed="false" title="Multiply">×</button><button data-op="/" aria-pressed="false" title="Divide">÷</button></div>
+<div class="row"><div><label for="br">Show the result in base</label><input id="br" type="number" min="2" max="36" value="10"></div></div>
+<button class="go" id="calc">Calculate</button>
+<div class="out" id="o1" aria-live="polite">Result appears here.</div>
+</section>
+
+<section class="card" id="p2" hidden>
+<div class="row"><div><label for="v">Number</label><input id="v" value="255" autocomplete="off"></div></div>
+<div class="row two">
+<div><label for="from">From base</label><input id="from" type="number" min="2" max="36" value="10"></div>
+<div><label for="to">To base</label><input id="to" type="number" min="2" max="36" value="2"></div></div>
+<button class="go" id="conv">Convert</button>
+<div class="out" id="o2" aria-live="polite">Result appears here.</div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);let op='+';
+const sol=d=>`<div class="sol"><h3>Solution</h3>${d.steps.map((s,i)=>`<h4>Step ${i+1}: ${s.title}</h4>${s.lines.map(l=>`<div>${l}</div>`).join('')}`).join('')}</div>`;
+function tab(n){[1,2].forEach(i=>{$('p'+i).hidden=i!==n;$('t'+i).setAttribute('aria-selected',i===n)})}
+$('t1').onclick=()=>tab(1);$('t2').onclick=()=>tab(2);
+$('ops').onclick=e=>{const b=e.target.closest('button');if(!b)return;op=b.dataset.op;
+ document.querySelectorAll('#ops button').forEach(x=>x.setAttribute('aria-pressed',x===b))};
+async function post(url,body,out,render){
+ try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json();out.className='out'+(d.ok?'':' err');out.innerHTML=d.ok?render(d):d.error}
+ catch{out.className='out err';out.textContent='Could not reach the server.'}}
+$('calc').onclick=()=>post('/api/operate',{base_a:$('ba').value,base_b:$('bb').value,base_r:$('br').value,a:$('a').value,b:$('b').value,op},$('o1'),
+ d=>`<b>${d.result}</b><small>Base ${$('br').value} result</small><small>Decimal: ${d.decimal}</small>${d.extra?`<small>${d.extra}</small>`:''}${sol(d)}`);
+$('conv').onclick=()=>post('/api/convert',{value:$('v').value,from:$('from').value,to:$('to').value},$('o2'),
+ d=>`<b>${d.result}</b><small>Base ${$('to').value} result</small><small>BIN ${d.common[2]} · OCT ${d.common[8]} · DEC ${d.common[10]} · HEX ${d.common[16]}</small>${sol(d)}`);
+['a','b','v'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter')(id==='v'?$('conv'):$('calc')).click()}));
+
+// falling binary background
+const c=$('rain'),x=c.getContext('2d');let cols,drops;
+function size(){c.width=innerWidth;c.height=innerHeight;cols=Math.ceil(c.width/22);drops=Array.from({length:cols},()=>Math.random()*-40)}
+size();addEventListener('resize',size);
+setInterval(()=>{x.fillStyle='rgba(7,4,2,.14)';x.fillRect(0,0,c.width,c.height);x.font='18px JetBrains Mono, monospace';
+ drops.forEach((y,i)=>{x.fillStyle=Math.random()<.08?'#ffd54a':'#ff8a1f';x.fillText(Math.random()<.5?'0':'1',i*22,y*22);
+  drops[i]=y*22>c.height&&Math.random()>.975?0:y+1})},70);
+</script></body></html>
